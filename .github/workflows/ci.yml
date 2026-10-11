@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RUN_FLAGS: -T
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Use the runner's UID/GID inside the container
+        run: |
+          echo "HOST_UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "HOST_GID=$(id -g)" >> "$GITHUB_ENV"
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build dev image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/dev/Dockerfile
+          build-args: |
+            UID=${{ env.HOST_UID }}
+            GID=${{ env.HOST_GID }}
+          tags: cognitive-code-analysis-vscode-dev
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Install
+        run: make install
+
+      - name: Lint
+        run: make lint
+
+      - name: Compile
+        run: make compile
+
+      - name: Unit tests
+        run: make test-unit
+
+      - name: E2E tests
+        run: make test-e2e
+
+      - name: Package
+        run: make package
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vsix
+          path: dist/*.vsix
+          if-no-files-found: error

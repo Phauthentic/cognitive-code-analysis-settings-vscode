@@ -1,0 +1,117 @@
+{
+  "name": "cognitive-code-analysis",
+  "displayName": "Cognitive Code Analysis",
+  "description": "Live cognitive complexity feedback for PHP while you type, powered by phpcca.",
+  "version": "0.1.0",
+  "publisher": "phauthentic",
+  "license": "GPL-3.0-only",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#1e1e2e",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Phauthentic/cognitive-code-analysis-settings-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Phauthentic/cognitive-code-analysis-settings-vscode/issues"
+  },
+  "homepage": "https://github.com/Phauthentic/cognitive-code-analysis-settings-vscode#readme",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "keywords": [
+    "php",
+    "cognitive complexity",
+    "phpcca",
+    "linter",
+    "code quality",
+    "sarif"
+  ],
+  "activationEvents": [
+    "onLanguage:php"
+  ],
+  "main": "./out/src/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "The extension runs the phpcca executable of the workspace, which is arbitrary code."
+    }
+  },
+  "contributes": {
+    "configuration": {
+      "title": "Cognitive Code Analysis",
+      "properties": {
+        "phpcca.enable": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "description": "Show cognitive complexity diagnostics for PHP files."
+        },
+        "phpcca.executable": {
+          "type": "string",
+          "default": "vendor/bin/phpcca",
+          "scope": "resource",
+          "markdownDescription": "Path to the `phpcca` executable. Relative paths are resolved against the workspace folder. If the default `vendor/bin/phpcca` does not exist, `phpcca` from `PATH` is used."
+        },
+        "phpcca.phpExecutable": {
+          "type": "string",
+          "default": "php",
+          "scope": "resource",
+          "markdownDescription": "PHP binary used to run `phpcca` on Windows, where the script cannot be executed directly. Ignored on Linux and macOS."
+        },
+        "phpcca.configFile": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "markdownDescription": "Optional path to a phpcca config file, passed as `-c`. Relative paths are resolved against the workspace folder. If empty, `phpcca.yaml` in the workspace folder is used when present."
+        },
+        "phpcca.runOn": {
+          "type": "string",
+          "enum": [
+            "save",
+            "type"
+          ],
+          "enumDescriptions": [
+            "Analyse when a file is opened or saved.",
+            "Analyse when a file is opened and, debounced, while typing."
+          ],
+          "default": "type",
+          "scope": "resource",
+          "description": "When to analyse PHP files."
+        },
+        "phpcca.debounceMs": {
+          "type": "number",
+          "default": 500,
+          "minimum": 0,
+          "scope": "resource",
+          "description": "Delay in milliseconds after the last keystroke before analysing (only for phpcca.runOn = type)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "lint": "eslint . && tsc -p . --noEmit",
+    "test:unit": "npm run compile && mocha \"out/test/unit/**/*.test.js\"",
+    "test:e2e": "npm run compile && node out/test/e2e/runTest.js",
+    "package": "npm run compile && vsce package --out dist/"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.20.5",
+    "@types/vscode": "1.96.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "4.0.0",
+    "eslint": "^10.12.0",
+    "mocha": "^11.8.0",
+    "ovsx": "1.2.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.1"
+  }
+}

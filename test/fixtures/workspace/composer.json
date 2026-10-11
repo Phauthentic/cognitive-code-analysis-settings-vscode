@@ -1,0 +1,12 @@
+{
+    "name": "phauthentic/cognitive-code-analysis-vscode-fixture",
+    "description": "Fixture workspace for the VS Code extension E2E tests.",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "phauthentic/cognitive-code-analysis": "^1.11"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Cognitive Code Analysis (VS Code extension)",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "dev",
+  "workspaceFolder": "/app",
+  "remoteUser": "dev",
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "npm ci",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint"]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+cognitive:
+  scoreThreshold: 0.5
+  cache:
+    enabled: false

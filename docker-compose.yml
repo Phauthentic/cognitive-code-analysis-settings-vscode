@@ -1,0 +1,26 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
+    image: cognitive-code-analysis-vscode-dev
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - vscode_test:/app/.vscode-test
+      - npm_cache:/home/dev/.npm
+      - composer_cache:/home/dev/.cache/composer
+    working_dir: /app
+    shm_size: 1gb
+    # PID 1 ignores SIGUSR1, which makes xvfb-run hang waiting for Xvfb.
+    init: true
+    command: "tail -f /dev/null"
+
+volumes:
+  node_modules:
+  vscode_test:
+  npm_cache:
+  composer_cache:
